@@ -1,7 +1,7 @@
 Service Registry App
 =================================
 
-![Alt text](https://github.com/amotamed/service-registry-app/blob/master/screenshot.png "Screenshot")
+![Alt text](https://raw.githubusercontent.com/amotamed/service-registry-app/master/screenshot.png "Screenshot")
 
 
 
