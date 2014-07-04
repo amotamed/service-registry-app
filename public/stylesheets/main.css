@@ -1,0 +1,44 @@
+
+
+input[type=search] {
+  border-radius: 4px;
+  height: 8px !important;
+  margin-bottom: 12px !important
+
+}
+
+.dataTables_length label select {
+  height: 28px !important;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+input[type=submit] {
+ border-radius: 4px;
+}
+
+.myRounded {
+  border-radius: 4px;
+}
+
+
+.paginate_button {
+  font-size: small;
+}
+
+.header {
+  margin-top: 40px;
+}
+
+.content {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+
+.dialogTitle {
+   font-size: 1rem;
+   font-weight: bold;
+   padding-bottom: 20px;
+   cursor: auto;
+}

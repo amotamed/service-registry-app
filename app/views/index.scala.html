@@ -1,0 +1,195 @@
+@(message: String)
+
+@main("Welcome to the service-registry-app") {
+
+    <template id="serviceRegistriesTemplate">
+        <table cellpadding="0" cellspacing="0" border="0" class="display" id="serverRegistries">
+            <thead>
+            <tr>
+                <th width="200">Name</th>
+                <th>Endpoints</th>
+                <th>Port</th>
+                <th>Attributes</th>
+                <th width="100">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </template>
+
+    <template id="addEndpointTemplate">
+        <div class='row'>
+            <div class='small-8 columns'>
+                <input type='text' name='endpoint' placeholder='Endpoint'  /></div>
+                <div class='small-1 pull-3 columns'>
+                    <a href='#' onclick='$(this).parent().parent().remove()' ><i  class='fi-minus small'></i></a>
+                </div>
+        </div>
+    </template>
+
+    <template id="addAttributeTemplate">
+        <div class='row'>
+            <div class='small-4 columns'>
+                <input type="text" name="key" placeholder="Key">
+            </div>
+            <div class='small-4 columns'>
+                <input type="text" name="keyValue" placeholder="Value">
+            </div>
+            <div class='small-1 pull-3 columns'>
+                <a href='#' onclick='$(this).parent().parent().remove()' ><i  class='fi-minus small'></i></a>
+            </div>
+        </div>
+
+    </template>
+
+    <template id="serviceRegistriesRowTemplate">
+        <tr>
+            <td><label class="name"></label></td>
+            <td><label class="endpoints"></label></td>
+            <td><label class="port"></label></td>
+            <td><label class="attributes"></label></td>
+            <td>
+                <input type="button" class="edit" value="edit">
+                <input type="button" data-reveal-id="confirmDelete" class="delete" value="delete">
+            </td>
+        </tr>
+    </template>
+
+    <div class="row">
+        <div class="large-12 columns">
+            <div class="nav-bar right">
+                <ul class="button-group">
+                    <li><a href="#" data-reveal-id="addService" class="small button">Add a Service</a></li>
+                    <li><a href="#" data-reveal-id="about" class="small button">About</a></li>
+                </ul>
+            </div>
+            <div class="header">
+                <h1>Service Registry App <small>Getting your services registered</small></h1>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="large-9 columns content">
+            <section>
+                <div class="row">
+                    <div class="large-12 columns" id="serviceRegistriesHolder">
+
+                    </div>
+                </div>
+
+                <div class="reveal-modal tiny" id="about" data-reveal>
+                    <div class="row">
+                        <div class="small-12 columns">
+                            <label class="dialogTitle">About Service Registry App</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="small-12 columns">
+                            Stuff here
+                        </div>
+                    </div>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+
+                <div  class="reveal-modal tiny" id="confirmDelete" data-reveal>
+                    <div class="row">
+                        <div class="small-12 columns">
+                            <label class="dialogTitle">Are you sure you want to delete?</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                       <div class="small-12 columns">
+                           <input type="text" id="deleteName" disabled>
+                       </div>
+                    </div>
+                    <div class="row">
+                        <div class="small-12 columns">
+                            <a id="confirmDeleteButton" href="#" class="radius button small">Confirm</a>
+                        </div>
+                     </div>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+
+
+                <div class="reveal-modal medium" id="addService"  data-reveal >
+                    <input type="hidden" id="oldServiceName" >
+                    <form action="ServiceRegistries" method="post" >
+                        <div class="row">
+                            <div class="small-12 columns">
+                                <label class="dialogTitle" id="serviceRegistriesTitle">Add a Service</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-8 columns">
+                                <input id="serviceRegistriesName" type="text" name="name" placeholder="Name" required data-invalid />
+                            </div>
+                            <div class="small-4   columns" >
+                                <input id="serviceRegistriesPort" type="number" name="port" placeholder="Port" required data-invalid />
+                            </div>
+
+                        </div>
+                        <div  class="row">
+                            <div class="small-8 columns">
+                                <input name="endpoint" id="endpoint" type="text" placeholder="Endpoint" required data-invalid />
+                            </div>
+                            <div class="small-1 pull-3 columns">
+                                <a href="#" id="addEndpoint"><i  class="fi-plus small"></i></a>
+                            </div>
+                        </div>
+                        <div id="additionalEndpointContainer"></div>
+                        <div class="row">
+                            <div class="small-8 columns">
+                                <label class="dialogTitle">Attributes</label>
+                            </div>
+                            <div class="small-4 columns">
+                                <a href="#" id="addAttribute"><i  class="fi-plus small"></i></a>
+                            </div>
+                        </div>
+                        <div id="additionalAttributeContainer"></div>
+                        <!-- TODO, add some js validation -->
+                        <div  class="row">
+                            <div class="small-12 columns">
+                                <!--<input id="save" class="button small" type="submit" onclick="" >-->
+                                <input id="save" class="button small myRounded" type="button" value="save"  >
+                            </div>
+                        </div>
+                    </form>
+
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+
+            </section>
+
+        </div>
+    </div>
+
+
+    <footer class="row">
+        <div class="large-12 columns">
+            <div class="row">
+                <div class="large-6 columns">
+                    <p>Available on Github</p>
+                </div>
+                <div class="large-6 columns">
+                    <ul class="inline-list right">
+                        <li><a href="#" data-reveal-id="addService">Add a Service</a></li>
+                        <li><a href="#" data-reveal-id="about">About</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        $( document ).ready(function() {
+            $(document).foundation();
+            initEventHandlers();
+            refreshGrid();
+        });
+    </script>
+
+}

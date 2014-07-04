@@ -1,0 +1,14 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index
+
+# REST api for the Service Registry object
+GET     /ServiceRegistries          controllers.ServiceRegistryController.getServiceRegistry(filter: Option[String], size: Option[Int], offset: Option[Int])
+POST    /ServiceRegistries          controllers.ServiceRegistryController.postServiceRegistry
+DELETE  /ServiceRegistries/:name          controllers.ServiceRegistryController.deleteServiceRegistry(name: String)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
