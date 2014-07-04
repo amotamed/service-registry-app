@@ -123,21 +123,6 @@ function initEventHandlers() {
       });
     });
 
-     //TODO, delete
-    //stop form from submitting to new page
-    $('form').submit(function(){
-        $.post($(this).attr('action'), $(this).serialize(), function(response){
-      },'json')
-      .always(function(){
-
-        clearForm();
-        //close modal
-        $('#addService').foundation('reveal', 'close');
-        refreshGrid();
-      });
-
-      return false;
-    });
 }
 
 
@@ -159,7 +144,6 @@ function initActionButtons() {
         $('#serviceRegistriesTitle').text("Edit a Service");
 
         //set values
-        //TODO, set all values
         var rowItems = $(item).parent().parent().children();
         var name = rowItems.first().children().first().text();
         var endpoints = $(rowItems[1]).children().first().text().split(',');
