@@ -73,6 +73,25 @@ function postService() {
 
 }
 
+function deleteService(name, callback) {
+  $.ajax({
+      url: '/ServiceRegistries/' + encodeURIComponent(name),
+      type: 'DELETE',
+      success: function(result) {
+          //close dialog
+          $('#confirmDelete').foundation('reveal', 'close');
+
+          if(callback) {
+            callback.apply();
+          }
+          else {
+            //refresh grid
+            refreshGrid();
+          }
+      }
+  });
+}
+
 function addEndpoint(value) {
     var content = $('#addEndpointTemplate')[0].content;
     $(content.querySelector('input')).val(value);
@@ -97,6 +116,11 @@ function initEventHandlers() {
     });
 
     $('#save').bind( "click", function() {
+      var oldServiceName = $('#oldServiceName').val();
+      var newServiceName = $('input[name=name]').val();
+      if( oldServiceName !== "" && oldServiceName !== newServiceName) {
+        deleteService(oldServiceName, function() { postService });
+      }
       postService();
     })
 
@@ -107,16 +131,7 @@ function initEventHandlers() {
     });
 
     $('#confirmDeleteButton').bind( "click", function() {
-        $.ajax({
-           url: '/ServiceRegistries/' + encodeURIComponent($('#deleteName').val()),
-           type: 'DELETE',
-        success: function(result) {
-           //close dialog
-           $('#confirmDelete').foundation('reveal', 'close');
-           //refresh grid
-           refreshGrid();
-        }
-      });
+      deleteService($('#deleteName').val());
     });
 }
 
