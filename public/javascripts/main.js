@@ -69,11 +69,11 @@ function refreshGrid() {
 
 function postService() {
 
-  var attributes = { }
-  var endpoints =  $.map( $('[name=endpoint]'), function(item) { return $(item).val()  })
-  var keys =  $.map( $('[name=key]'), function(item) { return $(item).val()  })
-  var values =  $.map( $('[name=keyValue]'), function(item) { return $(item).val()  })
-  $(keys).each(function(index, item) { if(item !== "") attributes[item] = values[index] })
+  var attributes = { };
+  var endpoints =  $.map( $('[name=endpoint]'), function(item) { return $(item).val()  });
+  var keys =  $.map( $('[name=key]'), function(item) { return $(item).val()  });
+  var values =  $.map( $('[name=keyValue]'), function(item) { return $(item).val()  });
+  $(keys).each(function(index, item) { if(item !== "") attributes[item] = values[index] });
 
   var postData = { "name" : $('input[name=name]').val(),
                    "port" : parseInt($('input[name=port]').val()),
@@ -133,9 +133,11 @@ function initEventHandlers() {
       var oldServiceName = $('#oldServiceName').val();
       var newServiceName = $('input[name=name]').val();
       if( oldServiceName !== "" && oldServiceName !== newServiceName) {
-        deleteService(oldServiceName, function() { postService });
+        deleteService(oldServiceName, function() { postService() });
       }
-      postService();
+      else {
+        postService();
+      }
     })
 
     $(document).on('closed.fndtn.reveal', '[data-reveal]', function () {
