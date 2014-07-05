@@ -1,12 +1,8 @@
 function clearForm() {
     //clear form
-    $('input[name=name]').val("");
-    $('input[name=port]').val("");
-    $('#additionalEndpointContainer').empty();
-    $('#additionalAttributeContainer').empty();
-    $('input[name=endpoint]').val("");
+    $('input[name=name], input[name=port], input[name=endpoint], #oldServiceName').val("");
+    $('#additionalAttributeContainer, #additionalEndpointContainer').empty();
     $('#serviceRegistriesTitle').text("Add a Service");
-    $('#oldServiceName').val("");
 }
 
 function refreshGrid() {
@@ -19,17 +15,15 @@ function refreshGrid() {
         for( i = 0; i < result.length; i++) {
           var entity = result[i];
 
-          var attributes = ""
-          $.each(entity.attributes, function(key, value) {
-            attributes += key + " = " + value + ",";
+          var attributes = $.map(entity.attributes, function(value, key) {
+            return key + " = " + value;
           });
-          attributes = attributes.substring(0, attributes.length - 1);
 
           var content = $('#serviceRegistriesRowTemplate')[0].content;
           content.querySelector('.name').innerHTML = entity.name;
           content.querySelector('.endpoints').innerHTML = entity.endpoints.join(",");
           content.querySelector('.port').innerHTML = entity.port;
-          content.querySelector('.attributes').innerHTML = attributes;
+          content.querySelector('.attributes').innerHTML = attributes.join(", ");
 
           $('#serverRegistries tbody').append(document.importNode(content, true)) ;
         }
@@ -66,28 +60,31 @@ function postService() {
                    "attributes" : attributes
   };
 
-
   $.ajax("ServiceRegistries", {
     data : JSON.stringify(postData),
     contentType : 'application/json',
     type : 'POST' })
-
   .done(function() {
     clearForm();
     //close modal
     $('#addService').foundation('reveal', 'close');
     refreshGrid();
-  })
+  }) ;
 
 }
 
 function addEndpoint(value) {
-  var content = $('#addEndpointTemplate')[0].content;
-  if(value) {
+    var content = $('#addEndpointTemplate')[0].content;
     $(content.querySelector('input')).val(value);
-  }
-  $('#additionalEndpointContainer').append(document.importNode(content, true))
-  $(content.querySelector('input')).val("");
+    $('#additionalEndpointContainer').append(document.importNode(content, true))
+    $(content.querySelector('input')).val("");
+}
+
+function addAttribute(key, value) {
+    var content = $('#addAttributeTemplate')[0].content;
+    $(content.querySelector('input[name=key]')).val(key)
+    $(content.querySelector('input[name=keyValue]')).val(value)
+    $('#additionalAttributeContainer').append(document.importNode(content, true))
 }
 
 function initEventHandlers() {
@@ -96,8 +93,7 @@ function initEventHandlers() {
     });
 
     $('#addAttribute').bind( "click", function() {
-        var content = $('#addAttributeTemplate')[0].content;
-        $('#additionalAttributeContainer').append(document.importNode(content, true))
+        addAttribute();
     });
 
     $('#save').bind( "click", function() {
@@ -122,7 +118,6 @@ function initEventHandlers() {
         }
       });
     });
-
 }
 
 
@@ -147,18 +142,25 @@ function initActionButtons() {
         var rowItems = $(item).parent().parent().children();
         var name = rowItems.first().children().first().text();
         var endpoints = $(rowItems[1]).children().first().text().split(',');
+        var attributes = $(rowItems[3]).children().first().text().trim().split(',');
+
         $('#oldServiceName').val(name);
         $('#serviceRegistriesName').val(name);
         $('#serviceRegistriesPort').val($(rowItems[2]).children().first().text());
 
-        var first = true;
         $(endpoints).each(function(index, value) {
-          if(first) {
+          if(index === 0) {
             $('#endpoint').val(value)
-            first = false;
             return;
           }
           addEndpoint(value);
+        })
+
+        $(attributes).each(function(index, value) {
+            if(value.indexOf("=") != -1) {
+                var pair = value.split("=");
+                addAttribute(pair[0].trim(), pair[1].trim());
+            }
         })
 
         //open edit

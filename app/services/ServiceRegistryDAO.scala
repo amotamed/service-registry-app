@@ -49,7 +49,6 @@ object ServiceRegistryDAO {
     size.map( limit => results.limit(limit))
     offset.map( skip => results.skip(skip))
 
-
     results.map{ result =>
       grater[ServiceRegistry].asObject(result)
     }.toList
