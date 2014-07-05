@@ -14,33 +14,31 @@ function refreshGrid() {
         $('#serviceRegistriesHolder').append(document.importNode(content, true))
 
         var result = JSON.parse(data);
-        var data = []
-        for( i = 0; i < result.length; i++) {
+        var data = [];
+        var result = $.each(result, function(index, entity) {
+            var attributes = $.map(entity.attributes, function(value, key) {
+                return key + " = " + value;
+            });
 
-          var entity = result[i];
-          var attributes = $.map(entity.attributes, function(value, key) {
-            return key + " = " + value;
-          });
+            data.push([ entity.name,
+                entity.port,
+                entity.endpoints,
+                attributes,
+                '<input type="button" class="edit" value="edit"><input type="button" data-reveal-id="confirmDelete" class="delete" value="delete">'
+            ]);
 
-          data.push([ entity.name,
-              entity.port,
-              entity.endpoints,
-              attributes,
-              '<input type="button" class="edit" value="edit"><input type="button" data-reveal-id="confirmDelete" class="delete" value="delete">'
-          ]);
+        });
 
-        }
-
-         $('#serverRegistries').dataTable( {
-                       "data": data,
-                       "columns": [
-                           { "title": "Name", "class": "name nameHeader"  },
-                           { "title": "Port" , "class": "port" },
-                           { "title": "Endpoints", "class": "endpoints" },
-                           { "title": "Attributes", "class": "attributes"},
-                           { "title": "Actions" }
-                       ]
-                   } );
+        $('#serverRegistries').dataTable( {
+            "data": data,
+            "columns": [
+                { "title": "Name", "class": "name nameHeader"  },
+                { "title": "Port" , "class": "port" },
+                { "title": "Endpoints", "class": "endpoints" },
+                { "title": "Attributes", "class": "attributes"},
+                { "title": "Actions" }
+            ]
+        } );
 
         $('.paginate_button').each(function(index,item){
           $(item).bind( "click", function() {
