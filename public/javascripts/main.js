@@ -7,27 +7,40 @@ function clearForm() {
 
 function refreshGrid() {
     $.get( "/ServiceRegistries", function( data ) {
-        $('#serviceRegistriesHolder').empty()
 
+        //TODO, remove and switch to init grid
+        $('#serviceRegistriesHolder').empty()
         var content = $('#serviceRegistriesTemplate')[0].content;
         $('#serviceRegistriesHolder').append(document.importNode(content, true))
-        var result = JSON.parse(data);
-        for( i = 0; i < result.length; i++) {
-          var entity = result[i];
 
+        var result = JSON.parse(data);
+        var data = []
+        for( i = 0; i < result.length; i++) {
+
+          var entity = result[i];
           var attributes = $.map(entity.attributes, function(value, key) {
             return key + " = " + value;
           });
 
-          var content = $('#serviceRegistriesRowTemplate')[0].content;
-          content.querySelector('.name').innerHTML = entity.name;
-          content.querySelector('.endpoints').innerHTML = entity.endpoints.join(",");
-          content.querySelector('.port').innerHTML = entity.port;
-          content.querySelector('.attributes').innerHTML = attributes.join(", ");
+          data.push([ entity.name,
+              entity.port,
+              entity.endpoints,
+              attributes,
+              '<input type="button" class="edit" value="edit"><input type="button" data-reveal-id="confirmDelete" class="delete" value="delete">'
+          ]);
 
-          $('#serverRegistries tbody').append(document.importNode(content, true)) ;
         }
-        $('#serverRegistries').dataTable();
+
+         $('#serverRegistries').dataTable( {
+                       "data": data,
+                       "columns": [
+                           { "title": "Name", "class": "name nameHeader"  },
+                           { "title": "Port" , "class": "port" },
+                           { "title": "Endpoints", "class": "endpoints" },
+                           { "title": "Attributes", "class": "attributes"},
+                           { "title": "Actions" }
+                       ]
+                   } );
 
         $('.paginate_button').each(function(index,item){
           $(item).bind( "click", function() {
@@ -136,7 +149,7 @@ function initActionButtons() {
 
         //set the name of the service to delete, the window will handle the rest
         var rowItems = $(item).parent().parent().children();
-        var name = rowItems.first().children().first().text();
+        var name = rowItems.first().text();
         $('#deleteName').val(name);
         });
     });
@@ -148,13 +161,13 @@ function initActionButtons() {
 
         //set values
         var rowItems = $(item).parent().parent().children();
-        var name = rowItems.first().children().first().text();
-        var endpoints = $(rowItems[1]).children().first().text().split(',');
-        var attributes = $(rowItems[3]).children().first().text().trim().split(',');
+        var name = rowItems.first().text();
+        var endpoints = $(rowItems[2]).text().split(',');
+        var attributes = $(rowItems[3]).text().trim().split(',');
 
         $('#oldServiceName').val(name);
         $('input[name=name]').val(name);
-        $($('input[name=port]').val($(rowItems[2]).children().first()).text());
+        $('input[name=port]').val($(rowItems[1]).text());
 
         $(endpoints).each(function(index, value) {
           if(index === 0) {

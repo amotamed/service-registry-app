@@ -42,3 +42,11 @@ input[type=submit] {
    padding-bottom: 20px;
    cursor: auto;
 }
+
+#serverRegistries {
+  width: 100%;
+}
+
+.nameHeader {
+  width: 200px;
+}
