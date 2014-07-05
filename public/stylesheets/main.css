@@ -17,7 +17,7 @@ input[type=submit] {
  border-radius: 4px;
 }
 
-.myRounded {
+myRounded {
   border-radius: 4px;
 }
 
@@ -49,4 +49,8 @@ input[type=submit] {
 
 .nameHeader {
   width: 200px;
+}
+
+.icon {
+  padding-top: 11px;
 }

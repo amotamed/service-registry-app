@@ -4,17 +4,12 @@
 
 <!-- templates -->
 
-<template id="serviceRegistriesTemplate">
-    <table cellpadding="0" cellspacing="0" border="0" class="display" id="serverRegistries">
-    </table>
-</template>
-
 <template id="addEndpointTemplate">
     <div class='row'>
         <div class='small-8 columns'>
             <input type='text' name='endpoint' placeholder='Endpoint'/></div>
         <div class='small-1 pull-3 columns'>
-            <a href='#' onclick='$(this).parent().parent().remove()'><i class='fi-minus small'></i></a>
+            <a href='#' onclick='$(this).parent().parent().remove()'><div class='fi-minus small icon'></div></a>
         </div>
     </div>
 </template>
@@ -28,7 +23,7 @@
             <input type="text" name="keyValue" placeholder="Value">
         </div>
         <div class='small-1 pull-3 columns'>
-            <a href='#' onclick='$(this).parent().parent().remove()'><i class='fi-minus small'></i></a>
+            <a href='#' onclick='$(this).parent().parent().remove()'><div class='fi-minus small icon'></div></a>
         </div>
     </div>
 
@@ -57,7 +52,8 @@
         <section>
             <div class="row">
                 <div class="large-12 columns" id="serviceRegistriesHolder">
-
+                    <table cellpadding="0" cellspacing="0" border="0" class="display" id="serverRegistries">
+                    </table>
                 </div>
             </div>
 
@@ -97,6 +93,7 @@
 
             <div class="reveal-modal medium" id="addService" data-reveal>
                 <input type="hidden" id="oldServiceName">
+                <input type="hidden" id="currentIndex">
 
                 <form action="ServiceRegistries" method="post">
                     <div class="row">
@@ -119,7 +116,7 @@
                                    data-invalid/>
                         </div>
                         <div class="small-1 pull-3 columns">
-                            <a href="#" id="addEndpoint"><i class="fi-plus small"></i></a>
+                            <a href="#" id="addEndpoint"><div class="fi-plus small icon"></div></a>
                         </div>
                     </div>
                     <div id="additionalEndpointContainer"></div>
@@ -128,7 +125,7 @@
                             <label class="dialogTitle">Attributes</label>
                         </div>
                         <div class="small-4 columns">
-                            <a href="#" id="addAttribute"><i class="fi-plus small"></i></a>
+                            <a href="#" id="addAttribute"><div class="fi-plus small icon"></div></a>
                         </div>
                     </div>
                     <div id="additionalAttributeContainer"></div>
@@ -170,7 +167,7 @@
         $( document ).ready(function() {
             $(document).foundation();
             initEventHandlers();
-            refreshGrid();
+            initGrid();
         });
 
 </script>

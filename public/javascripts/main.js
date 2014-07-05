@@ -11,13 +11,8 @@ function clearForm() {
     $('#serviceRegistriesTitle').text("Add a Service");
 }
 
-function refreshGrid(callback) {
+function initGrid() {
     $.get( "/ServiceRegistries", function( data ) {
-
-        //TODO, remove and switch to init grid
-        $('#serviceRegistriesHolder').empty()
-        var content = $('#serviceRegistriesTemplate')[0].content;
-        $('#serviceRegistriesHolder').append(document.importNode(content, true))
 
         var result = JSON.parse(data);
         var data = [];
@@ -43,8 +38,8 @@ function refreshGrid(callback) {
             "columnDefs": [
                 {
                   "data": null,
-                  "defaultContent": '<input type="button" class="edit" value="edit">' +
-                    '<input type="button" data-reveal-id="confirmDelete" class="delete" value="delete">',
+                  "defaultContent": '<input type="button" value="edit">' +
+                    '<input type="button" data-reveal-id="confirmDelete" value="delete">',
                   "targets": -1
                 }
               ]
@@ -64,9 +59,6 @@ function refreshGrid(callback) {
         });
 
         initActionButtons();
-        if(callback) {
-          callback.apply();
-        }
     });
 }
 
@@ -94,7 +86,7 @@ function postService() {
     clearForm();
     //close modal
     $('#addService').foundation('reveal', 'close');
-    $('#serverRegistries').DataTable().row.add([ name, port, endpoints, getAttributesAsString(attributes) ]).draw();
+    $('#serverRegistries').DataTable().row.add([ name, port, endpoints, getAttributesAsString(attributes) ]).draw(true);
     initActionButtons();
   }) ;
 
@@ -107,7 +99,10 @@ function deleteService(name, callback) {
       success: function(result) {
           //close dialog
           $('#confirmDelete').foundation('reveal', 'close');
-          refreshGrid(callback);
+          $('#serverRegistries').dataTable().fnDeleteRow($('#currentIndex').val())
+          if(callback) {
+            callback.apply();
+          }
       }
   });
 }
@@ -159,16 +154,18 @@ function initEventHandlers() {
 
 
 function initActionButtons() {
-    $('.delete').each(function(index,item){
+    $('input[value=delete]').each(function(index,item){
         $(item).bind( "click", function() {
 
         //set the name of the service to delete, the window will handle the rest
         var rowItems = $(item).parent().parent().children();
+        var index = $('#serverRegistries').dataTable().fnGetPosition( $(item).closest('tr')[0] );
+        $('#currentIndex').val(index);
         $('#deleteName').val(rowItems.first().text());
         });
     });
 
-    $('.edit').each(function(index,item){
+    $('input[value=edit]').each(function(index,item){
       $(item).bind( "click", function() {
         //set title to edit
         $('#serviceRegistriesTitle').text("Edit a Service");
@@ -178,6 +175,9 @@ function initActionButtons() {
         var name = rowItems.first().text();
         var endpoints = $(rowItems[2]).text().split(',');
         var attributes = $(rowItems[3]).text().trim().split(',');
+
+        var index = $('#serverRegistries').dataTable().fnGetPosition( $(item).closest('tr')[0] );
+        $('#currentIndex').val(index);
 
         $('#oldServiceName').val(name);
         $('input[name=name]').val(name);
