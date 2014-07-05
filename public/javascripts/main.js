@@ -11,7 +11,7 @@ function clearForm() {
     $('#serviceRegistriesTitle').text("Add a Service");
 }
 
-function refreshGrid() {
+function refreshGrid(callback) {
     $.get( "/ServiceRegistries", function( data ) {
 
         //TODO, remove and switch to init grid
@@ -64,19 +64,24 @@ function refreshGrid() {
         });
 
         initActionButtons();
+        if(callback) {
+          callback.apply();
+        }
     });
 }
 
 function postService() {
 
   var attributes = { };
+  var name = $('input[name=name]').val();
+  var port = parseInt($('input[name=port]').val());
   var endpoints =  $.map( $('[name=endpoint]'), function(item) { return $(item).val()  });
   var keys =  $.map( $('[name=key]'), function(item) { return $(item).val()  });
   var values =  $.map( $('[name=keyValue]'), function(item) { return $(item).val()  });
   $(keys).each(function(index, item) { if(item !== "") attributes[item] = values[index] });
 
-  var postData = { "name" : $('input[name=name]').val(),
-                   "port" : parseInt($('input[name=port]').val()),
+  var postData = { "name" : name,
+                   "port" : port,
                    "endpoints" : endpoints,
                    "attributes" : attributes
   };
@@ -89,7 +94,8 @@ function postService() {
     clearForm();
     //close modal
     $('#addService').foundation('reveal', 'close');
-    refreshGrid();
+    $('#serverRegistries').DataTable().row.add([ name, port, endpoints, getAttributesAsString(attributes) ]).draw();
+    initActionButtons();
   }) ;
 
 }
@@ -101,7 +107,7 @@ function deleteService(name, callback) {
       success: function(result) {
           //close dialog
           $('#confirmDelete').foundation('reveal', 'close');
-          callback.apply();
+          refreshGrid(callback);
       }
   });
 }
@@ -147,7 +153,7 @@ function initEventHandlers() {
     });
 
     $('#confirmDeleteButton').bind( "click", function() {
-      deleteService($('#deleteName').val(), function(){ refreshGrid(); });
+      deleteService($('#deleteName').val(), function(){  });
     });
 }
 
