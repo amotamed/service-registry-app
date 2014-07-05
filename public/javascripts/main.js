@@ -54,8 +54,8 @@ function postService() {
   var values =  $.map( $('[name=keyValue]'), function(item) { return $(item).val()  })
   $(keys).each(function(index, item) { if(item !== "") attributes[item] = values[index] })
 
-  var postData = { "name" : $('#serviceRegistriesName').val(),
-                   "port" : parseInt($('#serviceRegistriesPort').val()),
+  var postData = { "name" : $('input[name=name]').val(),
+                   "port" : parseInt($('input[name=port]').val()),
                    "endpoints" : endpoints,
                    "attributes" : attributes
   };
@@ -80,14 +80,7 @@ function deleteService(name, callback) {
       success: function(result) {
           //close dialog
           $('#confirmDelete').foundation('reveal', 'close');
-
-          if(callback) {
-            callback.apply();
-          }
-          else {
-            //refresh grid
-            refreshGrid();
-          }
+          callback.apply();
       }
   });
 }
@@ -131,7 +124,7 @@ function initEventHandlers() {
     });
 
     $('#confirmDeleteButton').bind( "click", function() {
-      deleteService($('#deleteName').val());
+      deleteService($('#deleteName').val(), function(){ refreshGrid(); });
     });
 }
 
@@ -160,8 +153,8 @@ function initActionButtons() {
         var attributes = $(rowItems[3]).children().first().text().trim().split(',');
 
         $('#oldServiceName').val(name);
-        $('#serviceRegistriesName').val(name);
-        $('#serviceRegistriesPort').val($(rowItems[2]).children().first().text());
+        $('input[name=name]').val(name);
+        $($('input[name=port]').val($(rowItems[2]).children().first()).text());
 
         $(endpoints).each(function(index, value) {
           if(index === 0) {
