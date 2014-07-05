@@ -1,3 +1,9 @@
+function getAttributesAsString(attributes) {
+    return $.map(attributes, function(value, key) {
+        return key + " = " + value;
+    });
+}
+
 function clearForm() {
     //clear form
     $('input[name=name], input[name=port], input[name=endpoint], #oldServiceName').val("");
@@ -16,15 +22,11 @@ function refreshGrid() {
         var result = JSON.parse(data);
         var data = [];
         var result = $.each(result, function(index, entity) {
-            var attributes = $.map(entity.attributes, function(value, key) {
-                return key + " = " + value;
-            });
 
             data.push([ entity.name,
                 entity.port,
                 entity.endpoints,
-                attributes,
-                '<input type="button" class="edit" value="edit"><input type="button" data-reveal-id="confirmDelete" class="delete" value="delete">'
+                getAttributesAsString(entity.attributes)
             ]);
 
         });
@@ -37,7 +39,15 @@ function refreshGrid() {
                 { "title": "Endpoints", "class": "endpoints" },
                 { "title": "Attributes", "class": "attributes"},
                 { "title": "Actions" }
-            ]
+            ],
+            "columnDefs": [
+                {
+                  "data": null,
+                  "defaultContent": '<input type="button" class="edit" value="edit">' +
+                    '<input type="button" data-reveal-id="confirmDelete" class="delete" value="delete">',
+                  "targets": -1
+                }
+              ]
         } );
 
         $('.paginate_button').each(function(index,item){
@@ -141,14 +151,12 @@ function initEventHandlers() {
 
 
 function initActionButtons() {
-    //add delete listener
     $('.delete').each(function(index,item){
         $(item).bind( "click", function() {
 
         //set the name of the service to delete, the window will handle the rest
         var rowItems = $(item).parent().parent().children();
-        var name = rowItems.first().text();
-        $('#deleteName').val(name);
+        $('#deleteName').val(rowItems.first().text());
         });
     });
 
