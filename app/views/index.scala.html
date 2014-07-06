@@ -95,7 +95,7 @@
                 <input type="hidden" id="oldServiceName">
                 <input type="hidden" id="currentIndex">
 
-                <form action="ServiceRegistries" method="post">
+                <form action="ServiceRegistries" method="post" data-abide>
                     <div class="row">
                         <div class="small-12 columns">
                             <label class="dialogTitle" id="serviceRegistriesTitle">Add a Service</label>
@@ -103,17 +103,26 @@
                     </div>
                     <div class="row">
                         <div class="small-8 columns">
-                            <input type="text" name="name" placeholder="Name" required data-invalid/>
+                            <div class="name-field">
+                                <input type="text" name="name" placeholder="Name" required data-invalid/>
+                                <small class="error">Name is required.</small>
+                            </div>
                         </div>
                         <div class="small-4   columns">
-                            <input type="number" name="port" placeholder="Port" required data-invalid/>
+                            <div class="port-field">
+                                <input type="number" name="port" placeholder="Port" required data-invalid/>
+                                <small class="error">Port is required, has to be a number</small>
+                            </div>
                         </div>
 
                     </div>
                     <div class="row">
                         <div class="small-8 columns">
-                            <input name="endpoint" id="endpoint" type="text" placeholder="Endpoint" required
-                                   data-invalid/>
+                            <div class="endpoint-field">
+                                <input name="endpoint" id="endpoint" type="text" placeholder="Endpoint" required
+                                       data-invalid/>
+                                <small class="error">Endpoint is required</small>
+                            </div>
                         </div>
                         <div class="small-1 pull-3 columns">
                             <a href="#" id="addEndpoint"><div class="fi-plus small icon"></div></a>

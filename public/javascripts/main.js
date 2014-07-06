@@ -6,12 +6,20 @@ function getAttributesAsString(attributes) {
 
 function clearForm() {
     //clear form
-    $('input[name=name], input[name=port], input[name=endpoint], #oldServiceName').val("");
+    document.forms[0].reset();
     $('#additionalAttributeContainer, #additionalEndpointContainer').empty();
     $('#serviceRegistriesTitle').text("Add a Service");
 }
 
 function handleServiceSave() {
+
+    //validate form, return false if form has errors
+    var result = Foundation.libs.abide.parse_patterns($('input[name=name], input[name=port], [name=endpoint]'));
+    var errors = $.grep(result, function(val) { if(!val) return true } )
+    if( errors.length > 0 ) {
+      return false;
+    }
+
     var oldServiceName = $('#oldServiceName').val();
     var newServiceName = $('input[name=name]').val();
     if( oldServiceName !== "" && oldServiceName !== newServiceName) {
@@ -56,19 +64,6 @@ function initGrid() {
               ]
         } );
 
-        $('.paginate_button').each(function(index,item){
-          $(item).bind( "click", function() {
-
-            //on any item click, reinit the action buttons
-            $('.paginate_button').each(function(index,item){
-              $(item).bind( "click", function() {
-                initActionButtons();
-              });
-              initActionButtons();
-            });
-          });
-        });
-
         initActionButtons();
     });
 }
@@ -94,11 +89,11 @@ function postService() {
     contentType : 'application/json',
     type : 'POST' })
   .done(function() {
-    clearForm();
     //close modal
     $('#addService').foundation('reveal', 'close');
     $('#serverRegistries').DataTable().row.add([ name, port, endpoints, getAttributesAsString(attributes) ]).draw(true);
     initActionButtons();
+    clearForm();
   }) ;
 
 }
@@ -151,11 +146,14 @@ function initEventHandlers() {
         }
     });
 
-
     $(document).on('closed.fndtn.reveal', '[data-reveal]', function () {
-      if(this.id === "addService") {
-        clearForm();
-      }
+        if(this.id === "addService") {
+            clearForm();
+        }
+    });
+
+    $(document).on('opened.fndtn.reveal', '[data-reveal]', function () {
+        $('input[name=name]').focus();
     });
 
     $('#confirmDeleteButton').bind( "click", function() {
