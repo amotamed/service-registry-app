@@ -11,8 +11,19 @@ function clearForm() {
     $('#serviceRegistriesTitle').text("Add a Service");
 }
 
+function handleServiceSave() {
+    var oldServiceName = $('#oldServiceName').val();
+    var newServiceName = $('input[name=name]').val();
+    if( oldServiceName !== "" && oldServiceName !== newServiceName) {
+        deleteService(oldServiceName, function() { postService() } );
+    }
+    else {
+        postService();
+    }
+}
+
 function initGrid() {
-    $.get( "/ServiceRegistries", function( data ) {
+    $.get( "/ServiceRegistries", function(data) {
 
         var result = JSON.parse(data);
         var data = [];
@@ -130,16 +141,16 @@ function initEventHandlers() {
         addAttribute();
     });
 
-    $('#save').bind( "click", function() {
-      var oldServiceName = $('#oldServiceName').val();
-      var newServiceName = $('input[name=name]').val();
-      if( oldServiceName !== "" && oldServiceName !== newServiceName) {
-        deleteService(oldServiceName, function() { postService() });
-      }
-      else {
-        postService();
-      }
-    })
+    $('#save').bind( "click", function(event) {
+        handleServiceSave();
+    });
+
+    $("#addService").keypress(function (event) {
+        if(event.keyCode === 13) {
+            handleServiceSave();
+        }
+    });
+
 
     $(document).on('closed.fndtn.reveal', '[data-reveal]', function () {
       if(this.id === "addService") {
