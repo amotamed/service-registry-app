@@ -15,8 +15,8 @@ import com.novus.salat.global._
  */
 object ServiceRegistryDAO {
 
-  val mongoConn = MongoConnection()
-  val mongoDB = mongoConn("service_registry_app")("service_registry")
+  lazy val mongoClient = MongoClient("localhost" , 27017)
+  lazy val mongoDB = mongoClient("service_registry_app")("service_registry")
 
   implicit val ctx = new Context {
     val name = "Custom_Classloader"

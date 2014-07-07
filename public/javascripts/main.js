@@ -71,7 +71,7 @@ function initGrid() {
 function postService() {
 
   var attributes = { };
-  var name = $('input[name=name]').val();
+  var name = $('input[name=name]').val().trim();
   var port = parseInt($('input[name=port]').val());
   var endpoints =  $.map( $('[name=endpoint]'), function(item) { return $(item).val()  });
   var keys =  $.map( $('[name=key]'), function(item) { return $(item).val()  });
